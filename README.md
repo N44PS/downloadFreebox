@@ -1,6 +1,8 @@
 # downloadFreebox
 
-Torrents downloaded on your computer will automatically be added to your Freebox NAS on your local network. You only need two files :
+Using the [web interface](http://mafreebox.free.fr) Free offers us is wasting a few minutes for nothing and I didn't want to use any plugins or APIs.
+I ended up using only two files to automatically add downloaded torrents directly to my Freebox NAS using my local network (AFP).
+It actually watches a local folder for .torrent files and move them to a distant folder which is watched by the NAS itself.
 
 ## Only two files
 
@@ -22,12 +24,10 @@ do
 done
 ```
 
-* List the content of the watched folder
-* grab all .torrent file (There actually should be only one .torrent file at a time).
-* For each .torrent file, if the file still exists
-* Create a folder to be mounted to
-* If afp folder isn't mounted, mount it on the previous folder
-* Move the .torrent file into the mounted folder
+* The script just grab .torrent files from the wanted folder
+* If the AFP folder isn't created, create it then mount it
+* Move .torrent files into the AFP watched folder
+* The Freebox NAS then proceed by adding them to the download list.
 
 #### com.freebox.download.plist
 
@@ -55,19 +55,19 @@ done
 </plist>
 ```
 
-* This file actually runs the watch.sh script when there is a change to the watch folder
-* RunAtLoad set to true for starting the processus on boot
+* This file runs watch.sh when there is a change to the watched folder
+* ```RunAtLoad``` set to true for starting the processus on boot
 
 ## Where to put them ?
-- Put the .sh file inside your $PATH and make it executable
+- Put the .sh file inside your ```$PATH``` and make it executable
 - Put the .plist file inside /Library/LaunchDaemons
 
 #### Don't forget to replace the placeholder with real values
 
 ```
 # ${a} folder to watch          : e.g. /Users/xxx/Downloads
-# ${b} folder to create         : e.g. /Volumes/ Disque\ dur
-# ${c} afp folder to mount      : e.g. afp://192.168.0.254/Disque\ dur
+# ${b} folder to create         : e.g. /Volumes/ Disque\ dur 
+# ${c} afp folder to mount      : e.g. afp://xxx.xxx.x.x/Disque\ dur /* You can find it in Finder > Go > Connect to server */
 # ${d} Freebox watched folder   : e.g. /Volumes/ Disque\ dur/Téléchargement/À\ Télécharger
 # ${e} Path to the script       : e.g. /Users/xxx/bin/watch.sh
 ```
